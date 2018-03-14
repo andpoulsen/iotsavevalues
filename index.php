@@ -27,15 +27,18 @@
 
                     // Insert new query string parameter if has not been seen before
                     $insertsql = "INSERT INTO sys.queryparams (queryparam) 
-                                    SELECT '$type' 
-                                    WHERE NOT EXISTS (SELECT * FROM sys.queryparams WHERE queryparam='$type');
+                                    SELECT :type
+                                    WHERE NOT EXISTS (SELECT * FROM sys.queryparams WHERE queryparam=:type);
 
                                   INSERT INTO sys.values (value, type) 
-                                    SELECT '$value', id
+                                    SELECT :value, id
                                     FROM sys.queryparams 
-                                    WHERE queryparam='$type';
-                                  ";
-                    $conn->query($insertsql);
+                                    WHERE queryparam=:type;";
+                    $stmt = $conn->prepare($insertsql);
+                    $stmt->bindParam(':type', $type);
+                    $stmt->bindParam(':value', $value);
+                    
+                    $stmt->execute();
 
                 }catch(PDOException $e){
                     print "Error!: " . $e->getMessage() . "<br/>";
