@@ -6,7 +6,7 @@
  ?>
     <body>
         <h1>Sending and saving values test</h1>
-
+        
         <h2>Received values</h2>
         <?php
             parse_str($_SERVER['QUERY_STRING'], $query);
@@ -37,7 +37,6 @@
                     $stmt = $conn->prepare($insertsql);
                     $stmt->bindParam(':type', $type);
                     $stmt->bindParam(':value', $value);
-                    
                     $stmt->execute();
 
                 }catch(PDOException $e){
@@ -55,7 +54,7 @@
                 }
 
                 $conn = new PDO("mysql:host=$servername;dbname=sys", $username, $password);
-                $sql = "SELECT queryparam FROM queryparams";
+                $sql = "SELECT queryparam FROM queryparams ORDER BY id DESC";
                 foreach($conn->query($sql) as $row) {
                     echo $row['queryparam'] . "<br />";
                 }
